@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processo de Fabricação de Perfis de Borracha - Autotravi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Industrial Calm -->
+    <!-- Application Structure Plan: O SPA é um fluxograma interativo e horizontal que representa visualmente as quatro etapas do processo de fabricação. Clicar em cada etapa revela uma seção de detalhes abaixo, contendo a descrição, insumos, temperaturas e riscos. Esta estrutura foi escolhida por ser uma representação intuitiva do fluxo linear do processo, facilitando a compreensão sequencial e a exploração aprofundada de cada fase. -->
+    <!-- Visualization & Content Choices: A estrutura principal é um fluxograma criado com HTML e Tailwind CSS. A interatividade (clique para expandir) é gerenciada com JavaScript para exibir dinamicamente o conteúdo de cada etapa. Na etapa de Vulcanização, um botão de alternância permite ao usuário alternar a visualização entre os riscos de operação normal e os riscos em caso de falha, aumentando o engajamento e a clareza. Esta abordagem foi escolhida para transformar um relatório textual em uma ferramenta de aprendizado visual e interativa que destaca eficazmente os riscos ocupacionais. Nenhum SVG/Mermaid foi utilizado, conforme as diretrizes. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .process-step {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .process-step.active {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border-color: #4f46e5; /* indigo-600 */
+        }
+        .step-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .icon-bg {
+            background-color: #eef2ff; /* indigo-100 */
+            color: #4338ca; /* indigo-700 */
+        }
+        .risk-section {
+            border-left: 4px solid #f97316; /* orange-500 */
+            background-color: #fff7ed; /* orange-50 */
+        }
+        .risk-list-item {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .risk-list-item::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            top: 1px;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Fluxograma Interativo do Processo Produtivo</h1>
+            <p class="text-slate-600 mt-2">Análise das etapas, insumos e riscos ocupacionais na fabricação de perfis de borracha.</p>
+        </header>
+
+        <main>
+            <div id="process-flow" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+            </div>
+
+            <div id="details-panel" class="mt-10 min-h-[300px] bg-white rounded-lg shadow-md p-6 md:p-8 transition-opacity duration-500 opacity-0">
+                <p class="text-center text-slate-500">Selecione uma etapa acima para ver os detalhes.</p>
+            </div>
+        </main>
+
+        <footer class="text-center mt-12 text-sm text-slate-500">
+            <p>Este é um fluxograma representativo com base nas informações fornecidas. As temperaturas e riscos são aproximados.</p>
+        </footer>
+    </div>
+
+    <script>
+        const processData = {
+            'step1': {
+                id: 1,
+                title: 'Mistura e Composição',
+                icon: '⚙️',
+                description: 'Nesta fase inicial, as matérias-primas são pesadas e misturadas em equipamentos industriais (como misturadores Banbury) para criar a massa de borracha não vulcanizada.',
+                products: [
+                    { name: 'Polímero', value: 'Keltan® (EPDM)' },
+                    { name: 'Carga', value: 'Carbonato de Cálcio (Micron 5CD)' },
+                    { name: 'Plastificante', value: 'Óleo Parafínico (LUBRAQUIM 350PNE)' },
+                    { name: 'Ativadores', value: 'Óxido de Zinco BO, Ácido Esteárico' },
+                    { name: 'Agente de Vulcanização', value: 'Enxofre' },
+                    { name: 'Aceleradores', value: 'TMTD, DTDM, ZDEC, ZDBC' },
+                    { name: 'Retardador', value: 'PVI' },
+                    { name: 'Aditivo (Dessecante)', value: 'Prosec CS' },
+                ],
+                temperature: 'Ambiente, com aquecimento por atrito durante a mistura, atingindo aproximadamente <strong>80°C a 120°C</strong>. A temperatura é controlada para não iniciar a pré-vulcanização.',
+                risks: {
+                    normal: [
+                        '<strong>Poeiras em Suspensão:</strong> Risco de inalação de poeiras dos componentes em pó (Carbonato de Cálcio, Óxido de Zinco, Enxofre, Aceleradores) durante a pesagem e alimentação dos misturadores.',
+                        '<strong>Vapores Orgânicos:</strong> Emissão inicial de Compostos Orgânicos Voláteis (COVs) do óleo de processo devido ao aquecimento.',
+                    ]
+                }
+            },
+            'step2': {
+                id: 2,
+                title: 'Extrusão',
+                icon: '➡️',
+                description: 'A massa de borracha é alimentada em uma extrusora, que a força através de uma matriz para dar ao material o formato do perfil desejado (com ou sem alma de aço).',
+                products: [
+                    { name: 'Insumo', value: 'Massa de borracha não vulcanizada (proveniente da Etapa 1)' },
+                ],
+                temperature: 'A temperatura da massa é mantida em uma faixa de <strong>80°C a 110°C</strong>. O controle é crucial para garantir a maleabilidade sem iniciar a cura prematura ("scorch").',
+                risks: {
+                    normal: [
+                        '<strong>Emissão Controlada:</strong> Liberação contínua de COVs do óleo plastificante.',
+                        '<strong>Risco de Falha:</strong> Se a temperatura exceder o limite de segurança, pode ocorrer a pré-vulcanização ("scorch"), com liberação inicial dos subprodutos da decomposição dos aceleradores (aminas).',
+                    ]
+                }
+            },
+            'step3': {
+                id: 3,
+                title: 'Vulcanização (Cura)',
+                icon: '🔥',
+                description: 'O perfil de borracha extrudado passa por um longo túnel de aquecimento onde ocorre a reação de vulcanização, transformando a borracha de um estado plástico para um estado elástico e resistente.',
+                products: [
+                    { name: 'Insumo', value: 'Nenhum. A reação ocorre com os componentes já presentes na massa.' },
+                ],
+                temperature: 'Temperatura de cura controlada, tipicamente entre <strong>160°C e 200°C</strong>.',
+                risks: {
+                    normal: [
+                        '<strong>COVs:</strong> Volatilização de componentes do óleo de processo.',
+                        '<strong>Subprodutos da Cura:</strong> Liberação de <strong>aminas</strong> (da decomposição dos aceleradores), <strong>óxidos de enxofre (SOx)</strong> e <strong>óxidos de nitrogênio (NOx)</strong> em baixas concentrações.',
+                        '<strong>N-Nitrosaminas:</strong> Possibilidade de formação devido à reação de aminas com agentes nitrosantes no ambiente.'
+                    ],
+                    failure: [
+                        '<strong>Gases Tóxicos:</strong> Monóxido de Carbono (CO), altas concentrações de SOx e NOx.',
+                        '<strong>Fumos Metálicos:</strong> Fumos de Óxido de Zinco.',
+                        '<strong>Compostos Cancerígenos:</strong> Altas concentrações de <strong>N-Nitrosaminas</strong> e <strong>Hidrocarbonetos Policíclicos Aromáticos (HPAs)</strong>, formados pela pirólise (decomposição térmica > 300°C) da borracha.',
+                    ]
+                }
+            },
+            'step4': {
+                id: 4,
+                title: 'Resfriamento',
+                icon: '❄️',
+                description: 'Ao sair do túnel de vulcanização, o perfil de borracha quente percorre uma longa distância em esteiras para ser resfriado com ar ambiente ou por imersão em água, antes de ser enrolado ou cortado.',
+                products: [
+                    { name: 'Insumo', value: 'Nenhum.' },
+                ],
+                temperature: 'Resfriamento progressivo, de <strong>~200°C até a temperatura ambiente</strong>.',
+                risks: {
+                    normal: [
+                        '<strong>"Off-gassing":</strong> Esta é uma etapa crítica de emissão. A borracha quente continua a liberar para o ambiente de trabalho os gases e vapores residuais gerados durante a vulcanização. As emissões incluem <strong>COVs, aminas e outros subprodutos da cura</strong>. A área de resfriamento funciona como uma fonte de emissão extensa e difusa.',
+                    ]
+                }
+            }
+        };
+
+        const processFlowContainer = document.getElementById('process-flow');
+        const detailsPanel = document.getElementById('details-panel');
+        let activeStep = null;
+
+        function displayStepDetails(stepKey) {
+            const step = processData[stepKey];
+            if (!step) return;
+
+            activeStep = stepKey;
+
+            let productsHtml = step.products.map(p => `
+                <li class="flex justify-between py-2 border-b border-slate-200">
+                    <span class="font-medium text-slate-700">${p.name}:</span>
+                    <span class="text-right text-slate-600">${p.value}</span>
+                </li>
+            `).join('');
+
+            let risksHtml = step.risks.normal.map(r => `<li class="risk-list-item">${r}</li>`).join('');
+
+            let riskToggleHtml = '';
+            if (step.risks.failure) {
+                riskToggleHtml = `
+                    <div class="flex items-center justify-center space-x-2 my-4">
+                        <span class="text-sm font-medium">Operação Normal</span>
+                        <button id="risk-toggle" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-slate-300 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2" type="button" role="switch" aria-checked="false">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+                        </button>
+                        <span class="text-sm font-medium text-slate-400">Em Caso de Falha (>300°C)</span>
+                    </div>
+                `;
+            }
+
+            detailsPanel.innerHTML = `
+                <h2 class="text-2xl font-bold text-indigo-700 mb-4">${step.id}. ${step.title}</h2>
+                <p class="text-slate-600 mb-6">${step.description}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-3">Detalhes da Etapa</h3>
+                        <ul class="space-y-2">
+                             <li class="flex justify-between py-2 border-b border-slate-200">
+                                <span class="font-medium text-slate-700">Temperatura:</span>
+                                <span class="text-right text-slate-600">${step.temperature}</span>
+                            </li>
+                        </ul>
+                        <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-3 mt-6">Produtos Adicionados</h3>
+                        <ul class="space-y-1">${productsHtml}</ul>
+                    </div>
+                    <div class="risk-section p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold text-orange-600 mb-2">Riscos de Emissão</h3>
+                        ${riskToggleHtml}
+                        <ul id="risk-list" class="space-y-3 text-sm text-slate-700">${risksHtml}</ul>
+                    </div>
+                </div>
+            `;
+            detailsPanel.classList.remove('opacity-0');
+
+            if (step.risks.failure) {
+                const toggle = document.getElementById('risk-toggle');
+                const riskList = document.getElementById('risk-list');
+                const failureLabel = toggle.nextElementSibling;
+                const normalLabel = toggle.previousElementSibling;
+
+                toggle.addEventListener('click', () => {
+                    const isChecked = toggle.getAttribute('aria-checked') === 'true';
+                    toggle.setAttribute('aria-checked', !isChecked);
+                    toggle.classList.toggle('bg-red-600', !isChecked);
+                    toggle.classList.toggle('bg-slate-300', isChecked);
+                    toggle.querySelector('span').classList.toggle('translate-x-5');
+                    
+                    if (!isChecked) {
+                         riskList.innerHTML = step.risks.failure.map(r => `<li class="risk-list-item">${r}</li>`).join('');
+                         failureLabel.classList.remove('text-slate-400');
+                         normalLabel.classList.add('text-slate-400');
+                    } else {
+                         riskList.innerHTML = step.risks.normal.map(r => `<li class="risk-list-item">${r}</li>`).join('');
+                         failureLabel.classList.add('text-slate-400');
+                         normalLabel.classList.remove('text-slate-400');
+                    }
+                });
+            }
+
+            if (window.innerWidth < 768) {
+                detailsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            updateActiveStepUI();
+        }
+        
+        function updateActiveStepUI() {
+            document.querySelectorAll('.process-step').forEach(el => {
+                el.classList.remove('active');
+                if(el.dataset.step === activeStep) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        Object.keys(processData).forEach((key, index, arr) => {
+            const step = processData[key];
+            const stepElement = document.createElement('div');
+            stepElement.className = 'process-step bg-white rounded-lg shadow-md p-4 w-full md:w-1/5 border-b-4 border-transparent';
+            stepElement.dataset.step = key;
+            stepElement.innerHTML = `
+                <div class="flex items-center">
+                    <div class="icon-bg rounded-full p-2 mr-4">
+                        <span class="text-xl">${step.icon}</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">${step.id}. ${step.title}</h3>
+                    </div>
+                </div>
+            `;
+            stepElement.addEventListener('click', () => displayStepDetails(key));
+            processFlowContainer.appendChild(stepElement);
+
+            if (index < arr.length - 1) {
+                const connector = document.createElement('div');
+                connector.className = 'step-connector hidden md:block';
+                processFlowContainer.appendChild(connector);
+            }
+        });
+    </script>
+</body>
+</html>
