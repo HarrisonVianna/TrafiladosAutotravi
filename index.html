@@ -7,10 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Industrial Calm -->
-    <!-- Application Structure Plan: O SPA é um fluxograma interativo e horizontal que representa visualmente as quatro etapas do processo de fabricação. Clicar em cada etapa revela uma seção de detalhes abaixo, contendo a descrição, insumos, temperaturas e riscos. Esta estrutura foi escolhida por ser uma representação intuitiva do fluxo linear do processo, facilitando a compreensão sequencial e a exploração aprofundada de cada fase. -->
+    <!-- Application Structure Plan: O SPA é um fluxograma interativo e horizontal que representa visualmente as cinco etapas do processo de fabricação. Clicar em cada etapa revela uma seção de detalhes abaixo, contendo a descrição, insumos, temperaturas e riscos. Esta estrutura foi escolhida por ser uma representação intuitiva do fluxo linear do processo, facilitando a compreensão sequencial e a exploração aprofundada de cada fase. -->
     <!-- Visualization & Content Choices: A estrutura principal é um fluxograma criado com HTML e Tailwind CSS. A interatividade (clique para expandir) é gerenciada com JavaScript para exibir dinamicamente o conteúdo de cada etapa. Na etapa de Vulcanização, um botão de alternância permite ao usuário alternar a visualização entre os riscos de operação normal e os riscos em caso de falha, aumentando o engajamento e a clareza. Esta abordagem foi escolhida para transformar um relatório textual em uma ferramenta de aprendizado visual e interativa que destaca eficazmente os riscos ocupacionais. Nenhum SVG/Mermaid foi utilizado, conforme as diretrizes. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* slate-50 */
@@ -28,6 +31,7 @@
             flex-grow: 1;
             height: 2px;
             background-color: #cbd5e1; /* slate-300 */
+            min-width: 1rem;
         }
         .icon-bg {
             background-color: #eef2ff; /* indigo-100 */
@@ -58,7 +62,7 @@
         </header>
 
         <main>
-            <div id="process-flow" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+            <div id="process-flow" class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-2 lg:space-x-4">
             </div>
 
             <div id="details-panel" class="mt-10 min-h-[300px] bg-white rounded-lg shadow-md p-6 md:p-8 transition-opacity duration-500 opacity-0">
@@ -75,7 +79,7 @@
         const processData = {
             'step1': {
                 id: 1,
-                title: 'Mistura (pré-trafilados)',
+                title: 'Mistura pré-Trafilados',
                 icon: '⚙️',
                 description: 'Nesta fase inicial, as matérias-primas são pesadas e misturadas em equipamentos industriais para criar a massa de borracha não vulcanizada.',
                 products: [
@@ -88,7 +92,7 @@
                     { name: 'Retardador', value: 'PVI' },
                     { name: 'Aditivo (Dessecante)', value: 'Prosec CS' },
                 ],
-                temperature: 'Ambiente, com aquecimento por atrito durante a mistura, atingindo aproximadamente <strong>80°C a 120°C</strong>. A temperatura é controlada para não iniciar a pré-vulcanização.',
+                temperature: 'Ambiente, com aquecimento por atrito durante a mistura, atingindo aproximadamente <strong>80°C a 120°C</strong>.',
                 risks: {
                     normal: [
                         '<strong>Poeiras em Suspensão:</strong> Risco de inalação de poeiras dos componentes em pó (Carbonato de Cálcio, Óxido de Zinco, Enxofre, Aceleradores) durante a pesagem e alimentação dos misturadores.',
@@ -100,15 +104,16 @@
                 id: 2,
                 title: 'Extrusão',
                 icon: '➡️',
-                description: 'A massa de borracha é alimentada em uma extrusora, que a força através de uma matriz para dar ao material o formato do perfil desejado (com ou sem alma de aço).',
+                description: 'A massa de borracha é alimentada em uma extrusora, que a força através de uma matriz para dar ao material o formato do perfil desejado. Talco é aplicado para evitar aderência.',
                 products: [
-                    { name: 'Insumo', value: 'Massa de borracha não vulcanizada (proveniente da Etapa 1)' },
+                    { name: 'Insumo Principal', value: 'Massa de borracha não vulcanizada' },
+                    { name: 'Antiaderente', value: 'Talco Industrial' },
                 ],
-                temperature: 'A temperatura da massa é mantida em uma faixa de <strong>80°C a 110°C</strong>. O controle é crucial para garantir a maleabilidade sem iniciar a cura prematura ("scorch").',
+                temperature: 'A temperatura da massa é mantida em uma faixa de <strong>80°C a 110°C</strong> para garantir a maleabilidade sem iniciar a cura prematura.',
                 risks: {
                     normal: [
-                        '<strong>Emissão Controlada:</strong> Liberação contínua de COVs do óleo plastificante.',
-                        '<strong>Risco de Falha:</strong> Se a temperatura exceder o limite de segurança, pode ocorrer a pré-vulcanização ("scorch"), com liberação inicial dos subprodutos da decomposição dos aceleradores (aminas).',
+                        '<strong>Poeira de Talco:</strong> A aplicação do talco pode gerar poeira em suspensão, com risco de inalação e irritação respiratória.',
+                        '<strong>Emissão Controlada de COVs:</strong> Liberação contínua de vapores do óleo plastificante contido na massa.',
                     ]
                 }
             },
@@ -116,21 +121,22 @@
                 id: 3,
                 title: 'Vulcanização (Cura)',
                 icon: '🔥',
-                description: 'O perfil de borracha extrudado passa por um longo túnel de aquecimento onde ocorre a reação de vulcanização, transformando a borracha de um estado plástico para um estado elástico e resistente.',
+                description: 'O perfil de borracha passa por um longo túnel de aquecimento onde ocorre a reação de vulcanização. Um desmoldante é aplicado para que a borracha não grude na esteira.',
                 products: [
-                    { name: 'Insumo', value: 'Nenhum. A reação ocorre com os componentes já presentes na massa.' },
+                    { name: 'Insumo Principal', value: 'Perfil de borracha não vulcanizada' },
+                    { name: 'Desmoldante', value: 'PolyCoat 292 HS' },
                 ],
                 temperature: 'Temperatura de cura controlada, tipicamente entre <strong>160°C e 200°C</strong>.',
                 risks: {
                     normal: [
-                        '<strong>COVs:</strong> Volatilização de componentes do óleo de processo.',
-                        '<strong>Subprodutos da Cura:</strong> Liberação de <strong>aminas</strong> (da decomposição dos aceleradores), <strong>óxidos de enxofre (SOx)</strong> e <strong>óxidos de nitrogênio (NOx)</strong> em baixas concentrações.',
+                        '<strong>Vapores da Cura:</strong> Liberação de aminas (dos aceleradores), óxidos de enxofre (SOx) e óxidos de nitrogênio (NOx) em baixas concentrações.',
+                        '<strong>Vapores do Desmoldante:</strong> O aquecimento do desmoldante pode liberar vapores irritantes e produtos de sua decomposição térmica (óxidos de carbono e metálicos).',
                         '<strong>N-Nitrosaminas:</strong> Possibilidade de formação devido à reação de aminas com agentes nitrosantes no ambiente.'
                     ],
                     failure: [
                         '<strong>Gases Tóxicos:</strong> Monóxido de Carbono (CO), altas concentrações de SOx e NOx.',
                         '<strong>Fumos Metálicos:</strong> Fumos de Óxido de Zinco.',
-                        '<strong>Compostos Cancerígenos:</strong> Altas concentrações de <strong>N-Nitrosaminas</strong> e <strong>Hidrocarbonetos Policíclicos Aromáticos (HPAs)</strong>, formados pela pirólise (decomposição térmica > 300°C) da borracha.',
+                        '<strong>Compostos Cancerígenos:</strong> Altas concentrações de <strong>N-Nitrosaminas</strong> e <strong>Hidrocarbonetos Policíclicos Aromáticos (HPAs)</strong>, formados pela pirólise (> 300°C) da borracha.',
                     ]
                 }
             },
@@ -138,14 +144,31 @@
                 id: 4,
                 title: 'Resfriamento',
                 icon: '❄️',
-                description: 'Ao sair do túnel de vulcanização, o perfil de borracha quente percorre uma longa distância em esteiras para ser resfriado com ar ambiente ou por imersão em água, antes de ser enrolado ou cortado.',
+                description: 'Ao sair do túnel de vulcanização, o perfil de borracha quente percorre uma longa distância em esteiras para ser resfriado com ar ambiente ou por imersão em água.',
                 products: [
                     { name: 'Insumo', value: 'Nenhum.' },
                 ],
                 temperature: 'Resfriamento progressivo, de <strong>~200°C até a temperatura ambiente</strong>.',
                 risks: {
                     normal: [
-                        '<strong>"Off-gassing":</strong> Esta é uma etapa crítica de emissão. A borracha quente continua a liberar para o ambiente de trabalho os gases e vapores residuais gerados durante a vulcanização. As emissões incluem <strong>COVs, aminas e outros subprodutos da cura</strong>. A área de resfriamento funciona como uma fonte de emissão extensa e difusa.',
+                        '<strong>"Off-gassing":</strong> Etapa crítica de emissão. A borracha quente continua a liberar para o ambiente os gases residuais da vulcanização (COVs, aminas, etc.) que estavam "presos" em sua estrutura.',
+                    ]
+                }
+            },
+            'step5': {
+                id: 5,
+                title: 'Acabamento e Limpeza',
+                icon: '🧼',
+                description: 'Após o resfriamento, o perfil de borracha é limpo com uma solução específica para remover resíduos e prepará-lo para a aplicação final.',
+                products: [
+                    { name: 'Insumo', value: 'Solução de Limpeza (SWCF 1300 QL)' },
+                ],
+                temperature: 'Ambiente.',
+                risks: {
+                    normal: [
+                        '<strong>Vapores Altamente Inflamáveis:</strong> A solução (Metiletilcetona) é volátil e seus vapores podem formar misturas explosivas com o ar.',
+                        '<strong>Inalação de Solvente:</strong> Exposição aos vapores pode causar irritação respiratória, tontura, dor de cabeça e depressão do sistema nervoso central.',
+                        '<strong>Contato com a Pele e Olhos:</strong> Causa irritação ocular séria e pode ressecar a pele, causando dermatites.'
                     ]
                 }
             }
@@ -196,7 +219,7 @@
                                 <span class="text-right text-slate-600">${step.temperature}</span>
                             </li>
                         </ul>
-                        <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-3 mt-6">Produtos Adicionados</h3>
+                        <h3 class="text-lg font-semibold text-slate-800 border-b pb-2 mb-3 mt-6">Produtos Adicionados/Utilizados</h3>
                         <ul class="space-y-1">${productsHtml}</ul>
                     </div>
                     <div class="risk-section p-4 rounded-lg">
@@ -252,15 +275,15 @@
         Object.keys(processData).forEach((key, index, arr) => {
             const step = processData[key];
             const stepElement = document.createElement('div');
-            stepElement.className = 'process-step bg-white rounded-lg shadow-md p-4 w-full md:w-1/5 border-b-4 border-transparent';
+            stepElement.className = 'process-step bg-white rounded-lg shadow-md p-3 lg:p-4 w-full md:w-auto md:flex-1 border-b-4 border-transparent';
             stepElement.dataset.step = key;
             stepElement.innerHTML = `
                 <div class="flex items-center">
-                    <div class="icon-bg rounded-full p-2 mr-4">
-                        <span class="text-xl">${step.icon}</span>
+                    <div class="icon-bg rounded-full p-2 mr-3">
+                        <span class="text-lg lg:text-xl">${step.icon}</span>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800">${step.id}. ${step.title}</h3>
+                        <h3 class="font-semibold lg:font-bold text-sm lg:text-base text-slate-800">${step.id}. ${step.title}</h3>
                     </div>
                 </div>
             `;
